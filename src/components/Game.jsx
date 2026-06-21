@@ -15,9 +15,22 @@ const initialCards = [
 
 export default function Game() {
   const [cards] = useState(initialCards);
+  const [pickedCards, setPickedCards] = useState([]);
+  const score = pickedCards.length;
 
   function handleClick(id) {
+    if (pickedCards.includes(id)) {
+      console.log("Game Over");
+      resetGame();
+      return;
+    }
+
+    setPickedCards((prev) => [...prev, id]);
     console.log("Clicked:", id);
+  }
+
+  function resetGame() {
+    setPickedCards([]);
   }
 
   return (
