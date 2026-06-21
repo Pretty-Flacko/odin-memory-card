@@ -16,7 +16,7 @@ const initialCards = [
 export default function Game() {
   const [cards, setCards] = useState(() => shuffle(initialCards));
   const [pickedCards, setPickedCards] = useState([]);
-  const score = pickedCards.length;
+  const [bestScore, setBestScore] = useState(0);
 
   function handleClick(id) {
     if (pickedCards.includes(id)) {
@@ -25,10 +25,12 @@ export default function Game() {
       return;
     }
 
-    setPickedCards((prev) => [...prev, id]);
-    console.log("Clicked:", id);
+    setPickedCards((prev) => {
+      const updatedCards = [...prev, id];
+      return updatedCards;
+    });
 
-    setCards(() => shuffle(initialCards));
+    setCards((prev) => shuffle(prev));
   }
 
   function shuffle(array) {
@@ -45,13 +47,22 @@ export default function Game() {
   function resetGame() {
     setPickedCards([]);
     setCards(() => shuffle(initialCards));
+
+    setBestScore((prev) => Math.max(prev, pickedCards.length));
+    setScore(0);
   }
 
   return (
-    <div className="grid">
-      {cards.map((card) => (
-        <Card key={card.id} card={card} onClick={handleClick} />
-      ))}
-    </div>
+    <>
+      <div className="scoreboard">
+        <p>Score: {pickedCards.length}</p>
+        <p>Best: {bestScore}</p>
+      </div>
+      <div className="grid">
+        {cards.map((card) => (
+          <Card key={card.id} card={card} onClick={handleClick} />
+        ))}
+      </div>
+    </>
   );
 }
