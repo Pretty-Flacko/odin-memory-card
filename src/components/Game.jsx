@@ -49,7 +49,6 @@ export default function Game() {
     setCards(() => shuffle(initialCards));
 
     setBestScore((prev) => Math.max(prev, pickedCards.length));
-    setScore(0);
   }
 
   return (
