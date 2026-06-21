@@ -14,7 +14,7 @@ const initialCards = [
 ];
 
 export default function Game() {
-  const [cards] = useState(initialCards);
+  const [cards, setCards] = useState(() => shuffle(initialCards));
   const [pickedCards, setPickedCards] = useState([]);
   const score = pickedCards.length;
 
@@ -27,10 +27,24 @@ export default function Game() {
 
     setPickedCards((prev) => [...prev, id]);
     console.log("Clicked:", id);
+
+    setCards(() => shuffle(initialCards));
+  }
+
+  function shuffle(array) {
+    const copy = [...array];
+
+    for (let i = copy.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [copy[i], copy[j]] = [copy[j], copy[i]];
+    }
+
+    return copy;
   }
 
   function resetGame() {
     setPickedCards([]);
+    setCards(() => shuffle(initialCards));
   }
 
   return (
