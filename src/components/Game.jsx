@@ -20,12 +20,34 @@ export default function Game() {
   const [hasWon, setHasWon] = useState(false);
 
   useEffect(() => {
+    async function loadPokemon() {
+      const ids = Array.from({ length: 8 }, (_, i) => i + 1);
+
+      const results = await Promise.all(ids.map((id) => fetchPokemon(id)));
+
+      setCards(shuffle(results));
+    }
+
+    loadPokemon();
+  }, []);
+
+  useEffect(() => {
     if (hasWon) {
       alert("You win!");
       resetGame();
       setHasWon(false);
     }
   }, [hasWon]);
+
+  async function fetchPokemon(id) {
+    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
+    const data = await res.json();
+
+    return {
+      id: data.id,
+      url: data.sprites.front_default,
+    };
+  }
 
   function handleClick(id) {
     if (pickedCards.includes(id)) {
@@ -58,7 +80,7 @@ export default function Game() {
 
   function resetGame() {
     setPickedCards([]);
-    setCards(() => shuffle(initialCards));
+    setCards((prev) => shuffle(prev));
     setBestScore((prev) => Math.max(prev, pickedCards.length));
   }
 
