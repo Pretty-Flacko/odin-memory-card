@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "../styles/Game.css";
 import Card from "./Card";
 
@@ -17,6 +17,15 @@ export default function Game() {
   const [cards, setCards] = useState(() => shuffle(initialCards));
   const [pickedCards, setPickedCards] = useState([]);
   const [bestScore, setBestScore] = useState(0);
+  const [hasWon, setHasWon] = useState(false);
+
+  useEffect(() => {
+    if (hasWon) {
+      alert("You win!");
+      resetGame();
+      setHasWon(false);
+    }
+  }, [hasWon]);
 
   function handleClick(id) {
     if (pickedCards.includes(id)) {
@@ -25,10 +34,13 @@ export default function Game() {
       return;
     }
 
-    setPickedCards((prev) => {
-      const updatedCards = [...prev, id];
-      return updatedCards;
-    });
+    const updatedCards = [...pickedCards, id];
+    setPickedCards(updatedCards);
+
+    if (updatedCards.length === cards.length) {
+      setHasWon(true);
+      return;
+    }
 
     setCards((prev) => shuffle(prev));
   }
@@ -47,7 +59,6 @@ export default function Game() {
   function resetGame() {
     setPickedCards([]);
     setCards(() => shuffle(initialCards));
-
     setBestScore((prev) => Math.max(prev, pickedCards.length));
   }
 
