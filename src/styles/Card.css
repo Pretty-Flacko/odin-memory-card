@@ -1,17 +1,28 @@
 .card {
 	cursor: pointer;
-	width: 96px;
-	height: 116px;
+	width: 180px;
+	height: 220px;
 	border: 1px solid #000;
-	border-radius: 8px;
+	border-radius: 10px;
 	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-between;
+	background-color: #fff;
+	transition:
+		transform 0.15s ease,
+		box-shadow 0.15s ease;
+}
+
+.card:hover {
+	transform: scale(1.05);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .placeholder {
-	width: 96px;
-	height: 96px;
-	background-color: #5a5a5a;
-	color: #fff;
+	width: 180px;
+	height: 180px;
 	font-size: 12px;
 	display: flex;
 	align-items: center;
@@ -19,12 +30,13 @@
 }
 
 .card img {
-	width: 96px;
-	height: 96px;
+	width: 180px;
+	height: 180px;
 }
 
 .card p {
 	text-transform: capitalize;
-	font-size: 0.9rem;
+	font-size: 1.2rem;
 	text-align: center;
+	padding-bottom: 12px;
 }

@@ -5,7 +5,7 @@ export async function fetchPokemon(id) {
 	return {
 		id: data.id,
 		name: data.name,
-		url: data.sprites.front_default,
+		url: data.sprites.other["official-artwork"].front_default,
 	};
 }
 

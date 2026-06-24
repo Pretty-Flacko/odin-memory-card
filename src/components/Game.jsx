@@ -15,6 +15,7 @@ export default function Game() {
 		async function loadPokemon() {
 			const results = await fetchPokemonList(8);
 			setCards(shuffle(results));
+			console.log(results);
 		}
 
 		loadPokemon();
