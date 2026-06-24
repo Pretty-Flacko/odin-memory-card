@@ -7,9 +7,9 @@ import Scoreboard from "./Scoreboard";
 
 export default function Game() {
 	const [cards, setCards] = useState([]);
-	const [pickedCards, setPickedCards] = useState([]);
+	const [pickedCards, setPickedCards] = useState(new Set());
 	const [bestScore, setBestScore] = useState(0);
-	const [hasWon, setHasWon] = useState(false);
+	const hasWon = cards.length > 0 && pickedCards.size === cards.length;
 
 	useEffect(() => {
 		async function loadPokemon() {
@@ -21,41 +21,35 @@ export default function Game() {
 	}, []);
 
 	useEffect(() => {
-		if (hasWon) {
-			alert("You win!");
-			resetGame();
-			setHasWon(false);
-		}
+		if (!hasWon) return;
+
+		alert("You win!");
+		resetGame();
 	}, [hasWon]);
 
 	function handleClick(id) {
-		if (pickedCards.includes(id)) {
-			console.log("Game Over");
+		if (pickedCards.has(id)) {
+			alert("You lose!");
 			resetGame();
 			return;
 		}
 
-		const updatedCards = [...pickedCards, id];
-		setPickedCards(updatedCards);
-
-		if (updatedCards.length === cards.length) {
-			setHasWon(true);
-			return;
-		}
+		const next = new Set(pickedCards);
+		next.add(id);
+		setPickedCards(next);
 
 		setCards((prev) => shuffle(prev));
 	}
 
 	function resetGame() {
-		setPickedCards([]);
-		setHasWon(false);
-		setCards([]);
-		setBestScore((prev) => Math.max(prev, pickedCards.length));
+		setPickedCards(new Set());
+		setCards((prev) => shuffle([...prev]));
+		setBestScore((prev) => Math.max(prev, pickedCards.size));
 	}
 
 	return (
 		<>
-			<Scoreboard score={pickedCards.length} best={bestScore} />
+			<Scoreboard score={pickedCards.size} best={bestScore} />
 			<div className="grid">
 				{cards.map((card) => (
 					<Card key={card.id} card={card} onClick={handleClick} />
