@@ -24,27 +24,26 @@ export default function Game() {
 		if (!hasWon) return;
 
 		alert("You win!");
-		resetGame();
+		resetGame(pickedCards.size);
 	}, [hasWon]);
 
 	function handleClick(id) {
+		setCards((prev) => shuffle(prev));
+
 		if (pickedCards.has(id)) {
 			alert("You lose!");
-			resetGame();
+			resetGame(pickedCards.size);
 			return;
 		}
 
 		const next = new Set(pickedCards);
 		next.add(id);
 		setPickedCards(next);
-
-		setCards((prev) => shuffle(prev));
 	}
 
-	function resetGame() {
+	function resetGame(finalScore) {
 		setPickedCards(new Set());
-		setCards((prev) => shuffle([...prev]));
-		setBestScore((prev) => Math.max(prev, pickedCards.size));
+		setBestScore((prev) => Math.max(prev, finalScore));
 	}
 
 	return (
