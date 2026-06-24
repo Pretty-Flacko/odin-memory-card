@@ -10,12 +10,16 @@ export default function Game() {
 	const [pickedCards, setPickedCards] = useState(new Set());
 	const [bestScore, setBestScore] = useState(0);
 	const hasWon = cards.length > 0 && pickedCards.size === cards.length;
+	const [loading, setLoading] = useState(true);
 
 	useEffect(() => {
 		async function loadPokemon() {
-			const results = await fetchPokemonList(8);
-			setCards(shuffle(results));
-			console.log(results);
+			try {
+				const results = await fetchPokemonList(8);
+				setCards(shuffle(results));
+			} finally {
+				setLoading(false);
+			}
 		}
 
 		loadPokemon();
@@ -50,11 +54,24 @@ export default function Game() {
 	return (
 		<>
 			<Scoreboard score={pickedCards.size} best={bestScore} />
-			<div className="grid">
-				{cards.map((card) => (
-					<Card key={card.id} card={card} onClick={handleClick} />
-				))}
+
+			<div className="description">
+				<h1>Pokémon Memory Game</h1>
+				<p>
+					Click a Pokémon you haven't clicked before. Clicking the same Pokémon
+					twice resets your score.
+				</p>
 			</div>
+
+			{loading ? (
+				<div className="loading-state">Loading Pokémon...</div>
+			) : (
+				<div className="grid">
+					{cards.map((card) => (
+						<Card key={card.id} card={card} onClick={handleClick} />
+					))}
+				</div>
+			)}
 		</>
 	);
 }

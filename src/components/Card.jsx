@@ -10,7 +10,7 @@ export default function Card({ card, onClick }) {
 			<img
 				src={card.url}
 				alt="memory card"
-				onLoad={() => setTimeout(() => setLoaded(true), 5000)}
+				onLoad={() => setLoaded(true)}
 				style={{ display: loaded ? "block" : "none" }}
 			/>
 			<p>{card.name}</p>
