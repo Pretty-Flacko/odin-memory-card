@@ -1,5 +1,24 @@
 .card {
   cursor: pointer;
+  width: 96px;
+  height: 96px;
+  border: 1px solid #000;
   border-radius: 8px;
   overflow: hidden;
+}
+
+.placeholder {
+  width: 96px;
+  height: 96px;
+  background-color: #5a5a5a;
+  color: #fff;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card img {
+  width: 96px;
+  height: 96px;
 }
