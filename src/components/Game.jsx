@@ -3,6 +3,7 @@ import "../styles/Game.css";
 import { shuffle } from "../utils/gameUtils";
 import { fetchPokemon, fetchPokemonList } from "../utils/api";
 import Card from "./Card";
+import Scoreboard from "./Scoreboard";
 
 export default function Game() {
 	const [cards, setCards] = useState([]);
@@ -54,11 +55,7 @@ export default function Game() {
 
 	return (
 		<>
-			<div className="scoreboard">
-				<p>Score: {pickedCards.length}</p>
-				<p>Best: {bestScore}</p>
-			</div>
-
+			<Scoreboard score={pickedCards.length} best={bestScore} />
 			<div className="grid">
 				{cards.map((card) => (
 					<Card key={card.id} card={card} onClick={handleClick} />
