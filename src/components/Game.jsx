@@ -1,91 +1,69 @@
 import { useEffect, useState } from "react";
 import "../styles/Game.css";
+import { shuffle } from "../utils/gameUtils";
+import { fetchPokemon, fetchPokemonList } from "../utils/api";
 import Card from "./Card";
 
 export default function Game() {
-  const [cards, setCards] = useState([]);
-  const [pickedCards, setPickedCards] = useState([]);
-  const [bestScore, setBestScore] = useState(0);
-  const [hasWon, setHasWon] = useState(false);
+	const [cards, setCards] = useState([]);
+	const [pickedCards, setPickedCards] = useState([]);
+	const [bestScore, setBestScore] = useState(0);
+	const [hasWon, setHasWon] = useState(false);
 
-  useEffect(() => {
-    async function loadPokemon() {
-      const ids = Array.from({ length: 8 }, (_, i) => i + 1);
+	useEffect(() => {
+		async function loadPokemon() {
+			const results = await fetchPokemonList(8);
+			setCards(shuffle(results));
+		}
 
-      const results = await Promise.all(ids.map((id) => fetchPokemon(id)));
+		loadPokemon();
+	}, []);
 
-      setCards(shuffle(results));
-    }
+	useEffect(() => {
+		if (hasWon) {
+			alert("You win!");
+			resetGame();
+			setHasWon(false);
+		}
+	}, [hasWon]);
 
-    loadPokemon();
-  }, []);
+	function handleClick(id) {
+		if (pickedCards.includes(id)) {
+			console.log("Game Over");
+			resetGame();
+			return;
+		}
 
-  useEffect(() => {
-    if (hasWon) {
-      alert("You win!");
-      resetGame();
-      setHasWon(false);
-    }
-  }, [hasWon]);
+		const updatedCards = [...pickedCards, id];
+		setPickedCards(updatedCards);
 
-  async function fetchPokemon(id) {
-    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${id}`);
-    const data = await res.json();
+		if (updatedCards.length === cards.length) {
+			setHasWon(true);
+			return;
+		}
 
-    return {
-      id: data.id,
-      url: data.sprites.front_default,
-    };
-  }
+		setCards((prev) => shuffle(prev));
+	}
 
-  function handleClick(id) {
-    if (pickedCards.includes(id)) {
-      console.log("Game Over");
-      resetGame();
-      return;
-    }
+	function resetGame() {
+		setPickedCards([]);
+		setHasWon(false);
+		setCards([]);
+		setBestScore((prev) => Math.max(prev, pickedCards.length));
+	}
 
-    const updatedCards = [...pickedCards, id];
-    setPickedCards(updatedCards);
+	return (
+		<>
+			<div className="scoreboard">
+				<p>Score: {pickedCards.length}</p>
+				<p>Best: {bestScore}</p>
+			</div>
 
-    if (updatedCards.length === cards.length) {
-      setHasWon(true);
-      return;
-    }
-
-    setCards((prev) => shuffle(prev));
-  }
-
-  function shuffle(array) {
-    const copy = [...array];
-
-    for (let i = copy.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [copy[i], copy[j]] = [copy[j], copy[i]];
-    }
-
-    return copy;
-  }
-
-  function resetGame() {
-    setPickedCards([]);
-    setHasWon(false);
-    setCards([]);
-    setBestScore((prev) => Math.max(prev, pickedCards.length));
-  }
-
-  return (
-    <>
-      <div className="scoreboard">
-        <p>Score: {pickedCards.length}</p>
-        <p>Best: {bestScore}</p>
-      </div>
-
-      <div className="grid">
-        {cards.map((card) => (
-          <Card key={card.id} card={card} onClick={handleClick} />
-        ))}
-      </div>
-    </>
-  );
+			<div className="grid">
+				{cards.map((card) => (
+					<Card key={card.id} card={card} onClick={handleClick} />
+				))}
+			</div>
+		</>
+	);
 }
