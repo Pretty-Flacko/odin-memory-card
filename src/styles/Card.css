@@ -1,7 +1,7 @@
 .card {
 	cursor: pointer;
 	width: 96px;
-	height: 96px;
+	height: 116px;
 	border: 1px solid #000;
 	border-radius: 8px;
 	overflow: hidden;
@@ -21,4 +21,10 @@
 .card img {
 	width: 96px;
 	height: 96px;
+}
+
+.card p {
+	text-transform: capitalize;
+	font-size: 0.9rem;
+	text-align: center;
 }
